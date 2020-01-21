@@ -14,8 +14,10 @@ Features
 
 - Players now have their own internal temperature; don't stay in the cold/hot too long!
 
-- Snow falls globally in the winter.
+- Snow falls globally in cold biomes.
     - Snow also melts layer-by-layer on warm days instead of all at once by light.
+
+- Height-based variation of biome temperature.
 
 Biome tweaks
 ============
