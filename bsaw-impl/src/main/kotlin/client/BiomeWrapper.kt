@@ -34,10 +34,10 @@ class BiomeWrapper(val wrapped: Biome, val world: World, settings: Settings) :
     Biome(settings) {
     companion object {
         // cache to avoid allocating hundreds of objects a second
-        private val wrapperCache: MutableMap<Biome, BiomeWrapper> = mutableMapOf()
+        private val wrapperCache: MutableMap<Pair<Biome, World>, BiomeWrapper> = mutableMapOf()
 
         @JvmStatic fun wrap(other: Biome, world: World): BiomeWrapper {
-            return wrapperCache.computeIfAbsent(other) {
+            return wrapperCache.computeIfAbsent(Pair(other, world)) {
                 val settings = Settings().apply {
                     surfaceBuilder(other.surfaceBuilder)
                     precipitation(other.precipitation)
