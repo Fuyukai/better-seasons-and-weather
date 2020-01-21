@@ -15,7 +15,7 @@
  * along with BSAW.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package green.sailor.mc.bsaw.server
+package green.sailor.mc.bsaw.event
 
 import green.sailor.mc.bsaw.api.Season
 import green.sailor.mc.bsaw.api.Time

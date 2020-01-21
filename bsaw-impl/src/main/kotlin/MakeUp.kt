@@ -23,7 +23,7 @@ import green.sailor.mc.bsaw.component.PlayerHeatComponentImpl.Companion.PLAYER_H
 import green.sailor.mc.bsaw.impl.BiomeInfoMapImpl
 import green.sailor.mc.bsaw.season.WorldSeasonComponentImpl
 import green.sailor.mc.bsaw.season.WorldSeasonComponentImpl.Companion.WORLD_SEASONS
-import green.sailor.mc.bsaw.server.SeasonsServerTickCB
+import green.sailor.mc.bsaw.event.SeasonsServerTickCB
 import green.sailor.mc.bsaw.status.HypothermiaStatusEffect
 import nerdhub.cardinal.components.api.event.EntityComponentCallback
 import nerdhub.cardinal.components.api.event.WorldComponentCallback
