@@ -55,6 +55,9 @@ public abstract class MixinServerWorld {
         WorldSeasonComponent component = WorldSeasonComponent.getSeasonComponent(thisRef);
         double temp = component.getBiomeTemp(biome);
         BiomeExtendedInfo.RainfallType type = info.rainfallTypeFor(temp);
+        if (type == BiomeExtendedInfo.RainfallType.RAIN) {
+            return blockPos.getY() >= 90;
+        }
         if (type != BiomeExtendedInfo.RainfallType.SNOW) return false;
 
         // default impl
