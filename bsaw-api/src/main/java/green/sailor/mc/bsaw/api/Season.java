@@ -42,8 +42,7 @@ public enum Season {
      */
     @NotNull
     public static Season seasonFromTime(long worldTime) {
-        return Season.WINTER;
-        /*long cycled = worldTime % YEAR_LENGTH;
+        long cycled = worldTime % YEAR_LENGTH;
         if (0L <= cycled && cycled < DAY_LENGTH * 30) {
             return Season.SPRING;
         } else if (DAY_LENGTH * 30 <= cycled && cycled < DAY_LENGTH * 60) {
@@ -54,6 +53,6 @@ public enum Season {
             return Season.WINTER;
         } else {
             throw new IllegalArgumentException("Somehow invalid cycled" + cycled);
-        }*/
+        }
     }
 }
