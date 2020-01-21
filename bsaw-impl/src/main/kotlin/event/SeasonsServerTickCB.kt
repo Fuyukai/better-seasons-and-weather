@@ -55,7 +55,6 @@ class SeasonsServerTickCB(val overworld: World) : ServerTickCallback {
         // Update player heats every minute.
         if (overworld.time.rem(Time.MINUTE_LENGTH) == 0L) {
             for (player in overworld.players) {
-                println("Updating ${player.name} heat")
                 val heatComponent = player.heatComponent
                 heatComponent.update()
             }
