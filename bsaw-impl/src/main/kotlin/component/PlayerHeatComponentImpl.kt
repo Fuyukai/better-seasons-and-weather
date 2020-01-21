@@ -20,6 +20,8 @@ package green.sailor.mc.bsaw.component
 import green.sailor.mc.bsaw.*
 import green.sailor.mc.bsaw.status.HyperthermiaStatusEffect
 import green.sailor.mc.bsaw.status.HypothermiaStatusEffect
+import kotlin.math.max
+import kotlin.math.min
 import nerdhub.cardinal.components.api.ComponentRegistry
 import nerdhub.cardinal.components.api.ComponentType
 import net.minecraft.entity.Entity
@@ -27,9 +29,6 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import net.minecraft.world.Heightmap
-import kotlin.math.max
-import kotlin.math.min
 
 /**
  * Implementation of the player heat component.
@@ -125,7 +124,6 @@ class PlayerHeatComponentImpl(val player: PlayerEntity) : PlayerHeatComponent {
             }
 
             _temperature -= heatLoss
-
         } else if (ambient > sweatDissipiationTemperature) {
             // scale down heat gain
             val ambientOffset = min(48.0, HIGH_EFFECT_TEMP - ambient)
@@ -141,7 +139,6 @@ class PlayerHeatComponentImpl(val player: PlayerEntity) : PlayerHeatComponent {
             }
 
             _temperature += heatGain
-
         }
 
         updateStatusEffects()

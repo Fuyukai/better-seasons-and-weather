@@ -26,7 +26,6 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.SnowBlock
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
 import net.minecraft.world.biome.Biome
