@@ -19,6 +19,7 @@ package green.sailor.mc.bsaw.server
 
 import green.sailor.mc.bsaw.api.Season
 import green.sailor.mc.bsaw.api.Time
+import green.sailor.mc.bsaw.component.PlayerHeatComponent.Companion.heatComponent
 import green.sailor.mc.bsaw.component.WorldSeasonComponent.Companion.seasonComponent
 import green.sailor.mc.bsaw.season.WorldSeasonComponentImpl
 import net.fabricmc.fabric.api.event.server.ServerTickCallback
@@ -32,22 +33,32 @@ class SeasonsServerTickCB(val overworld: World) : ServerTickCallback {
     override fun tick(server: MinecraftServer) {
         val component = overworld.seasonComponent as WorldSeasonComponentImpl
 
-        // Branch A: Sunrise, forcibly update all temperatures.
-        if (overworld.timeOfDay == 1L) {
+        @Suppress("CascadeIf")
+        // Branch A: Empty temps, force an update.
+        if (component.biomeTemperatures.isEmpty()) {
             val season = Season.seasonFromTime(overworld.time)
             component.updateAllBiomeTemps(season = season, at = Time.SUNRISE)
         }
 
-        // Branch B: Sunset, forcibly update all temperatures.
-        if (overworld.timeOfDay == 12000L) {
+        // Branch B: Sunrise, update all temperatures for daytime.
+        else if (overworld.timeOfDay == 1L) {
+            val season = Season.seasonFromTime(overworld.time)
+            component.updateAllBiomeTemps(season = season, at = Time.SUNRISE)
+        }
+
+        // Branch C: Sunset, update all temperatures for nighttime.
+        else if (overworld.timeOfDay == 12000L) {
             val season = Season.seasonFromTime(overworld.time)
             component.updateAllBiomeTemps(season = season, at = Time.SUNSET)
         }
 
-        // Branch C: Not one of those times; but our component is empty (first run).
-        if (component.biomeTemperatures.isEmpty()) {
-            val season = Season.seasonFromTime(overworld.time)
-            component.updateAllBiomeTemps(season = season, at = Time.SUNRISE)
+        // Update player heats every minute.
+        if (overworld.time.rem(Time.MINUTE_LENGTH) == 0L) {
+            for (player in overworld.players) {
+                println("Updating ${player.name} heat")
+                val heatComponent = player.heatComponent
+                heatComponent.update()
+            }
         }
     }
 }

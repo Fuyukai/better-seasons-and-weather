@@ -18,8 +18,8 @@
 package green.sailor.mc.bsaw.client
 
 import green.sailor.mc.bsaw.api.BiomeExtendedInfo
-import green.sailor.mc.bsaw.getExtraInfo
-import green.sailor.mc.bsaw.getSeason
+import green.sailor.mc.bsaw.extraInfo
+import green.sailor.mc.bsaw.getTemperature
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.util.math.BlockPos
@@ -30,7 +30,7 @@ import net.minecraft.world.biome.Biome
  * A fake biome wrapper used in MixinWorldWrapper.
  */
 @Environment(EnvType.CLIENT)
-class BiomeWrapper(val wrapped: Biome, val world: World, settings: Biome.Settings) :
+class BiomeWrapper(val wrapped: Biome, val world: World, settings: Settings) :
     Biome(settings) {
     companion object {
         // cache to avoid allocating hundreds of objects a second
@@ -38,7 +38,7 @@ class BiomeWrapper(val wrapped: Biome, val world: World, settings: Biome.Setting
 
         @JvmStatic fun wrap(other: Biome, world: World): BiomeWrapper {
             return wrapperCache.computeIfAbsent(other) {
-                val settings = Biome.Settings().apply {
+                val settings = Settings().apply {
                     surfaceBuilder(other.surfaceBuilder)
                     precipitation(other.precipitation)
                     category(other.category)
@@ -55,9 +55,9 @@ class BiomeWrapper(val wrapped: Biome, val world: World, settings: Biome.Setting
     }
 
     override fun getPrecipitation(): Precipitation {
-        val season = world.getSeason()
-        val info = wrapped.getExtraInfo()
-        return when (info.rainfallTypeFor(season)) {
+        val info = wrapped.extraInfo
+        val temp = world.getTemperature(wrapped)
+        return when (info.rainfallTypeFor(temp)) {
             BiomeExtendedInfo.RainfallType.NONE -> Precipitation.NONE
             BiomeExtendedInfo.RainfallType.RAIN -> Precipitation.RAIN
             BiomeExtendedInfo.RainfallType.SNOW -> Precipitation.SNOW
@@ -66,19 +66,21 @@ class BiomeWrapper(val wrapped: Biome, val world: World, settings: Biome.Setting
 
     // this is only used for WorldRenderer
     override fun computeTemperature(blockPos: BlockPos): Float {
-        val season = world.getSeason()
-        val info = wrapped.getExtraInfo()
-        val fakeTemp = when (info.rainfallTypeFor(season)) {
-            BiomeExtendedInfo.RainfallType.SNOW -> 0.0f
-            else -> getTemperature()
-        }
-
-        return if (blockPos.y > 64) {
-            val f = (TEMPERATURE_NOISE.sample((blockPos.x.toFloat() / 8.0f).toDouble(),
-                (blockPos.z.toFloat() / 8.0f).toDouble(), false) * 4.0).toFloat()
-            fakeTemp - (f + blockPos.y.toFloat() - 64.0f) * 0.05f / 30.0f
+        val info = wrapped.extraInfo
+        val temp = world.getTemperature(wrapped)
+        val type = info.rainfallTypeFor(temp)
+        return if (type == BiomeExtendedInfo.RainfallType.SNOW) {
+            // < 0.15 is snow
+            0.0f
+        } else if (type == BiomeExtendedInfo.RainfallType.RAIN) {
+            // high Y coords always cause snow if it can rain
+            if (blockPos.y < 90) {
+                0.20f
+            } else {
+                0.00f
+            }
         } else {
-            fakeTemp
+            1.0f
         }
     }
 }

@@ -19,6 +19,7 @@ package green.sailor.mc.bsaw.api.component;
 
 import green.sailor.mc.bsaw.api.Season;
 import green.sailor.mc.bsaw.api.Time;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The interface for World season information.
@@ -30,10 +31,5 @@ public interface WorldSeasonProvider {
      * @param identifier The identifier for the biome.
      * @return The current temperature.
      */
-    double getBiomeTemp(String identifier);
-
-    /**
-     * Updates all biome temperature for the specified {@link Season} and {@link Time}.
-     */
-    void updateAllBiomeTemps(Season season, Time at);
+    double getBiomeTemp(@NotNull String identifier);
 }

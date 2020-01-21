@@ -33,8 +33,11 @@ public enum Season {
     /** Autumn; colder than summer but warmer than winter. */
     AUTUMN;
 
+    /** The length of a single MC day, in ticks. */
     public static final long DAY_LENGTH = 24000L;
+    /** The length of a single MC season, in ticks. */
     public static final long SEASON_LENGTH = DAY_LENGTH * 30;
+    /** The length of a single MC year, in ticks. */
     public static final long YEAR_LENGTH = DAY_LENGTH * 120;
 
     /**

@@ -29,6 +29,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
 import net.minecraft.world.biome.Biome
+import net.minecraft.world.dimension.DimensionType
 
 fun <T> Registry<T>.entryIterator() = object : Iterator<Pair<Identifier, T>> {
     val idIterator = ids.iterator()
@@ -44,7 +45,7 @@ fun <T> Registry<T>.entryIterator() = object : Iterator<Pair<Identifier, T>> {
  */
 fun doSnowblockMelt(state: BlockState, pos: BlockPos, world: World) {
     val biome = world.getBiome(pos)
-    if (world.getTemperature(biome) < 0.0) {
+    if (world.getTemperature(biome) > 0.5) {
         val level = state[SnowBlock.LAYERS]
         val nextLevel = level - 1
         if (nextLevel == 0) {
@@ -57,9 +58,9 @@ fun doSnowblockMelt(state: BlockState, pos: BlockPos, world: World) {
 }
 
 /**
- * Gets the component for this world.
+ * Gets the season for this world.
  */
-fun World.getSeason(): Season = Season.seasonFromTime(time)
+val World.season: Season get() = Season.seasonFromTime(time)
 
 /**
  * Gets the temperature for a biome on this world.
@@ -69,12 +70,44 @@ fun World.getTemperature(biome: Biome): Double {
     return component.getBiomeTemp(biome)
 }
 
+/**
+ * If it is raining in the specified biome.
+ */
+fun World.isRainingIn(biome: Biome): Boolean {
+    if (!isRaining) return false
+
+    val info = biome.extraInfo
+    val temperature = world.getTemperature(biome)
+    val type = info.rainfallTypeFor(temperature)
+    return isRaining && type === BiomeExtendedInfo.RainfallType.RAIN
+}
+
+/**
+ * If it is snowing in the specified biome.
+ */
+fun World.isSnowingIn(biome: Biome): Boolean {
+    if (!isRaining) return false
+
+    val info = biome.extraInfo
+    val temperature = world.getTemperature(biome)
+    val type = info.rainfallTypeFor(temperature)
+    return isRaining && type === BiomeExtendedInfo.RainfallType.SNOW
+}
+
+/**
+ * If the world has a form of downpour currently happening.
+ */
+val World.hasDownpour: Boolean get() = isRaining
+
 val UNKNOWN_IDENTIFIER = Identifier("bsaw:unknown")
 
 /**
  * Gets the extra info for this biome.
  */
-fun Biome.getExtraInfo(): BiomeExtendedInfo {
+val Biome.extraInfo: BiomeExtendedInfo get() {
     val id = Registry.BIOME.getId(this) ?: UNKNOWN_IDENTIFIER
     return BiomeInfoMapImpl.get(id.toString())
 }
+
+/** If the specified world is the overworld. */
+val World.isOverworld: Boolean get() = world.dimension.type === DimensionType.OVERWORLD

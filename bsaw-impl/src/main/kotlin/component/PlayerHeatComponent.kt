@@ -30,4 +30,9 @@ interface PlayerHeatComponent : EntitySyncedComponent, PlayerTemperatureProvider
         val PlayerEntity.heatComponent: PlayerHeatComponent get() =
             PlayerHeatComponentImpl.PLAYER_HEAT.get(this)
     }
+
+    /**
+     * Called to update the heat for the player.
+     */
+    fun update()
 }

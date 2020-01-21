@@ -83,6 +83,16 @@ public class BiomeExtendedInfo {
             }
             return super.nextRandomTemperature(season, false);
         }
+
+        @NotNull
+        @Override
+        public RainfallType rainfallTypeFor(double temperature) {
+            if (temperature < -3.0d) {
+                return RainfallType.SNOW;
+            } else {
+                return RainfallType.NONE;
+            }
+        }
     }
 
     /**
@@ -165,14 +175,20 @@ public class BiomeExtendedInfo {
     }
 
     /**
-     * @return The {@link RainfallType} for the specified season.
+     * Gets the rainfall type for the specified temperature.
+     *
+     * @param temperature The biome temperature.
+     * @return A {@link RainfallType}.
      */
-    @NotNull public RainfallType rainfallTypeFor(@NotNull Season season) {
-        // default impl
-        if (season == Season.WINTER) {
+    @NotNull public RainfallType rainfallTypeFor(double temperature) {
+        if (temperature <= 0.0d) {
             return RainfallType.SNOW;
+        } else if (temperature > 0.0d && temperature <= 35.0d) {
+            return RainfallType.RAIN;
+        } else {
+            // TODO
+            return RainfallType.RAIN;
         }
-        return RainfallType.RAIN;
     }
 
     /**

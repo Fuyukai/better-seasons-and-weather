@@ -17,6 +17,8 @@
 
 package green.sailor.mc.bsaw.component
 
+import green.sailor.mc.bsaw.api.Season
+import green.sailor.mc.bsaw.api.Time
 import green.sailor.mc.bsaw.api.component.WorldSeasonProvider
 import green.sailor.mc.bsaw.season.WorldSeasonComponentImpl
 import nerdhub.cardinal.components.api.util.sync.WorldSyncedComponent
@@ -33,4 +35,9 @@ interface WorldSeasonComponent : WorldSyncedComponent, WorldSeasonProvider {
      * Gets the current temperature for the specified [Biome].
      */
     fun getBiomeTemp(biome: Biome): Double
+
+    /**
+     * Updates all biome temperature for the specified [Season] and [Time].
+     */
+    fun updateAllBiomeTemps(season: Season, at: Time)
 }

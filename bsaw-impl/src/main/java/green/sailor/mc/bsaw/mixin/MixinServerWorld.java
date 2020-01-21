@@ -19,6 +19,7 @@ package green.sailor.mc.bsaw.mixin;
 
 import green.sailor.mc.bsaw.api.BiomeExtendedInfo;
 import green.sailor.mc.bsaw.api.Season;
+import green.sailor.mc.bsaw.component.WorldSeasonComponent;
 import green.sailor.mc.bsaw.impl.BiomeInfoMapImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -51,8 +52,9 @@ public abstract class MixinServerWorld {
         Identifier id = Registry.BIOME.getId(biome);
         assert id != null;
         BiomeExtendedInfo info = BiomeInfoMapImpl.INSTANCE.get(id.toString());
-        Season season = Season.seasonFromTime(thisRef.getTime());
-        BiomeExtendedInfo.RainfallType type = info.rainfallTypeFor(season);
+        WorldSeasonComponent component = WorldSeasonComponent.getSeasonComponent(thisRef);
+        double temp = component.getBiomeTemp(biome);
+        BiomeExtendedInfo.RainfallType type = info.rainfallTypeFor(temp);
         if (type != BiomeExtendedInfo.RainfallType.SNOW) return false;
 
         // default impl

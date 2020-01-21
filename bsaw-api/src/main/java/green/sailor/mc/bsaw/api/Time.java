@@ -25,4 +25,7 @@ public enum Time {
     NOON,
     SUNSET,
     MIDNIGHT;
+
+    /** The length of a single day minute in ticks (or one MC hour). */
+    public static long MINUTE_LENGTH = 20 * 60;
 }
