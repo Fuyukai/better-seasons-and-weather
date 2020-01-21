@@ -24,6 +24,7 @@ import green.sailor.mc.bsaw.impl.BiomeInfoMapImpl
 import green.sailor.mc.bsaw.season.WorldSeasonComponentImpl
 import green.sailor.mc.bsaw.season.WorldSeasonComponentImpl.Companion.WORLD_SEASONS
 import green.sailor.mc.bsaw.server.SeasonsServerTickCB
+import green.sailor.mc.bsaw.status.HypothermiaStatusEffect
 import nerdhub.cardinal.components.api.event.EntityComponentCallback
 import nerdhub.cardinal.components.api.event.WorldComponentCallback
 import net.fabricmc.api.ModInitializer
@@ -31,15 +32,22 @@ import net.fabricmc.fabric.api.event.server.ServerStartCallback
 import net.fabricmc.fabric.api.event.server.ServerTickCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.util.Identifier
+import net.minecraft.util.registry.Registry
 import net.minecraft.world.dimension.DimensionType
 
 object MakeUp : ModInitializer {
     override fun onInitialize() {
+        Registry.register(
+            Registry.STATUS_EFFECT,
+            Identifier("bsaw:hypothermia"),
+            HypothermiaStatusEffect
+        )
+
         // call other people
         val instance = FabricLoader.getInstance()
         val entry = instance.getEntrypoints("bsaw-biomes", InfoRegistrator::class.java)
         for (point in entry) {
-            println("Calling $point")
             point.register(BiomeInfoMapImpl)
         }
 

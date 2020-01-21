@@ -28,6 +28,10 @@ public interface PlayerTemperatureProvider {
         return 37.5D;
     }
 
+    default double getSweatDissipiationTemperature() {
+        return 27.0D;
+    }
+
     /**
      * @return The minimum temperature the player can be before becoming hypothermic.
      */

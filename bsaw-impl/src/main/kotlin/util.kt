@@ -26,6 +26,7 @@ import net.minecraft.block.BlockState
 import net.minecraft.block.SnowBlock
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
 import net.minecraft.world.World
 import net.minecraft.world.biome.Biome
@@ -54,6 +55,19 @@ fun doSnowblockMelt(state: BlockState, pos: BlockPos, world: World) {
         } else {
             world.setBlockState(pos, state.with(SnowBlock.LAYERS, nextLevel))
         }
+    }
+}
+
+/**
+ * Turns a rainfall type into a minecraft type.
+ */
+fun BiomeExtendedInfo.RainfallType.asMcType(pos: BlockPos): Biome.Precipitation {
+    return when (this) {
+        BiomeExtendedInfo.RainfallType.RAIN -> {
+            if (pos.y > 90) Biome.Precipitation.SNOW else Biome.Precipitation.RAIN
+        }
+        BiomeExtendedInfo.RainfallType.SNOW -> Biome.Precipitation.SNOW
+        BiomeExtendedInfo.RainfallType.NONE -> Biome.Precipitation.NONE
     }
 }
 

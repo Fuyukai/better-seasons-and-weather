@@ -3,6 +3,7 @@
   "package": "green.sailor.mc.bsaw.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+      "MixinWorld",
       "MixinServerWorld",
       "MixinSnowBlock"
   ],

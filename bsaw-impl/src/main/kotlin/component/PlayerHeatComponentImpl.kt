@@ -17,10 +17,9 @@
 
 package green.sailor.mc.bsaw.component
 
-import green.sailor.mc.bsaw.getTemperature
-import green.sailor.mc.bsaw.isOverworld
-import green.sailor.mc.bsaw.isRainingIn
-import green.sailor.mc.bsaw.isSnowingIn
+import green.sailor.mc.bsaw.*
+import green.sailor.mc.bsaw.status.HyperthermiaStatusEffect
+import green.sailor.mc.bsaw.status.HypothermiaStatusEffect
 import nerdhub.cardinal.components.api.ComponentRegistry
 import nerdhub.cardinal.components.api.ComponentType
 import net.minecraft.entity.Entity
@@ -28,6 +27,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
+import net.minecraft.world.Heightmap
 import kotlin.math.max
 import kotlin.math.min
 
@@ -75,27 +75,47 @@ class PlayerHeatComponentImpl(val player: PlayerEntity) : PlayerHeatComponent {
 
         val biome = player.world.getBiome(SHARED_POS)
         val ambient = player.world.getTemperature(biome)
-        if (ambient < idealTemperature) {
+        if (ambient < sweatDissipiationTemperature) {
             // scale down heat loss
             // this gets a range from 0 (no loss) to 1
             val ambientOffset = max(-40.0, ambient - LOW_EFFECT_TEMP)
-            var heatLoss = 1 - ambientOffset / (idealTemperature - LOW_EFFECT_TEMP)
+            var heatLoss = 1 - ambientOffset / (sweatDissipiationTemperature - LOW_EFFECT_TEMP)
             // if there's downpour...
-            if (player.world.isRainingIn(biome)) {
-                heatLoss += 0.3
-            } else if (player.world.isSnowingIn(biome)) {
-                heatLoss += 0.4
+            val playerIsCovered = player.world.isSkyVisible(SHARED_POS)
+            if (playerIsCovered) {
+                if (player.world.isRainingIn(biome)) {
+                    heatLoss += 0.3
+                } else if (player.world.isSnowingIn(biome)) {
+                    heatLoss += 0.4
+                }
             }
 
             _temperature -= heatLoss
-        } else if (ambient > idealTemperature) {
+
+        } else if (ambient > sweatDissipiationTemperature) {
             // scale down heat gain
             val ambientOffset = min(48.0, HIGH_EFFECT_TEMP - ambient)
-            val heatGain = 1 - ambientOffset / (HIGH_EFFECT_TEMP - idealTemperature)
+            var heatGain = 1 - ambientOffset / (HIGH_EFFECT_TEMP - sweatDissipiationTemperature)
+
+            val playerIsCovered = player.world.isSkyVisible(SHARED_POS)
+            if (playerIsCovered) {
+                if (player.world.isRainingIn(biome)) {
+                    heatGain -= 0.1
+                } else if (player.world.isSnowingIn(biome)) {
+                    heatGain -= 0.2
+                }
+            }
+
             _temperature += heatGain
+
         }
 
-        // TODO: Apply status effects
+        if (isHypothermic) {
+            player.addStatusEffect(HypothermiaStatusEffect.get())
+        } else if (isHyperthermic) {
+            player.addStatusEffect(HyperthermiaStatusEffect.get())
+        }
+
         sync()
     }
 }
