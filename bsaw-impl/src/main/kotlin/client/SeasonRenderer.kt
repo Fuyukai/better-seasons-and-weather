@@ -56,6 +56,8 @@ class SeasonRenderer : HudRenderCallback {
 
         // == rendering info == //
         val player = instance.player ?: error("Callback called without a player?")
+        if (player.isSpectator) return
+
         val seasonC = world.seasonComponent
         val heatC = player.heatComponent
         val bp = SHARED_BP.set(player)

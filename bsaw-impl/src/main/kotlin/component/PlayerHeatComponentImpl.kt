@@ -70,6 +70,12 @@ class PlayerHeatComponentImpl(val player: PlayerEntity) : PlayerHeatComponent {
 
     override fun update() {
         SHARED_POS.set(player)
+        if (player.isCreative || player.isSpectator) {
+            _temperature = idealTemperature
+            sync()
+            return
+        }
+
         // ???
         if (!player.world.isOverworld) return
 
