@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "green.sailor.mc.bsaw.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+      "MixinServerWorld",
+      "MixinSnowBlock"
+  ],
+  "client": [
+      "client.MixinWorldRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

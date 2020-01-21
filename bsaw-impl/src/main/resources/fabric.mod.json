@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "bsaw",
+  "version": "${version}",
+
+  "name": "Better Seasons and Weather",
+  "description": "Season and weather changes",
+  "authors": [
+    "Fuyukaii"
+  ],
+  "contact": {
+    "homepage": "https://sailor.green/",
+    "sources": "https://github.com/Fuyukai/bsaw"
+  },
+
+  "license": "GPLv3",
+  "icon": "assets/bsaw/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+      "main": [
+          {
+              "adapter": "kotlin",
+              "value": "green.sailor.mc.bsaw.MakeUp"
+          }
+      ],
+      "client": [
+          {
+              "adapter": "kotlin",
+              "value": "green.sailor.mc.bsaw.ClientMakeUp"
+          }
+      ],
+      "bsaw-biomes": [
+          {
+              "adapter": "kotlin",
+              "value": "green.sailor.mc.bsaw.impl.VanillaBiomeRegistration"
+          }
+      ]
+  },
+  "mixins": [
+    "bsaw.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.2"
+  },
+  "suggests": {}
+}
