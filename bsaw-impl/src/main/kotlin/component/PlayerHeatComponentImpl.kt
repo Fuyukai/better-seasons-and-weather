@@ -29,6 +29,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
+import sun.security.provider.SHA
 
 /**
  * Implementation of the player heat component.
@@ -107,7 +108,7 @@ class PlayerHeatComponentImpl(val player: PlayerEntity) : PlayerHeatComponent {
         if (!player.world.isOverworld) return
 
         val biome = player.world.getBiome(SHARED_POS)
-        val ambient = player.world.getTemperature(biome)
+        val ambient = player.world.getTemperatureAt(SHARED_POS)
         if (ambient < sweatDissipiationTemperature) {
             // scale down heat loss
             // this gets a range from 0 (no loss) to 1

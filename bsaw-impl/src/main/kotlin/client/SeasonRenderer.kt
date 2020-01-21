@@ -20,6 +20,7 @@ package green.sailor.mc.bsaw.client
 import green.sailor.mc.bsaw.api.Season
 import green.sailor.mc.bsaw.component.PlayerHeatComponent.Companion.heatComponent
 import green.sailor.mc.bsaw.component.WorldSeasonComponent.Companion.seasonComponent
+import green.sailor.mc.bsaw.getTemperatureAt
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
@@ -87,7 +88,7 @@ class SeasonRenderer : HudRenderCallback {
 
         // renderTempInfo()
         fontRenderer.run {
-            val temp = seasonC.getBiomeTemp(biome)
+            val temp = world.getTemperatureAt(bp)
             val fmtTemp = "%.2f °c".format(temp)
 
             draw("Ambient temperature: $fmtTemp", 10f, 40f, 0x00FFFFFF)

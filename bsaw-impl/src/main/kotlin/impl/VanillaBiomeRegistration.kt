@@ -34,6 +34,7 @@ object VanillaBiomeRegistration : InfoRegistrator {
 
         // hot biomes
         add(BiomeExtendedInfo.VeryHotBiomeExtendedInfo("minecraft:desert"))
+        add(BiomeExtendedInfo.VeryHotBiomeExtendedInfo("minecraft:desert_hills"))
         add(BiomeExtendedInfo.HotBiomeExtendedInfo("minecraft:beach"))
 
         // cold biomes

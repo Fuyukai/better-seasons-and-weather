@@ -44,8 +44,7 @@ fun <T> Registry<T>.entryIterator() = object : Iterator<Pair<Identifier, T>> {
  * Performs snow block melting.
  */
 fun doSnowblockMelt(state: BlockState, pos: BlockPos, world: World) {
-    val biome = world.getBiome(pos)
-    if (world.getTemperature(biome) > 0.5) {
+    if (world.getTemperatureAt(pos) > 0.5) {
         val level = state[SnowBlock.LAYERS]
         val nextLevel = level - 1
         if (nextLevel == 0) {
@@ -81,6 +80,18 @@ val World.season: Season get() = Season.seasonFromTime(time)
 fun World.getTemperature(biome: Biome): Double {
     val component = this.seasonComponent
     return component.getBiomeTemp(biome)
+}
+
+/**
+ * Gets the temperature at the specified position.
+ */
+// TODO: A proper height mapping equation
+fun World.getTemperatureAt(pos: BlockPos): Double {
+    val biome = getBiome(pos)
+    val temp = getTemperature(biome)
+    // y = -5/32x+10 where y = heat offset and x = y position
+    val calcTemp = ((-(5.0/32.0)) * pos.y.toDouble()) + 10
+    return temp + calcTemp
 }
 
 /**

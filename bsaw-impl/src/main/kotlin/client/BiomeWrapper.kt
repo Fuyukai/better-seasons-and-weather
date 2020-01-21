@@ -20,6 +20,7 @@ package green.sailor.mc.bsaw.client
 import green.sailor.mc.bsaw.api.BiomeExtendedInfo
 import green.sailor.mc.bsaw.extraInfo
 import green.sailor.mc.bsaw.getTemperature
+import green.sailor.mc.bsaw.getTemperatureAt
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.util.math.BlockPos
@@ -67,20 +68,15 @@ class BiomeWrapper(val wrapped: Biome, val world: World, settings: Settings) :
     // this is only used for WorldRenderer
     override fun computeTemperature(blockPos: BlockPos): Float {
         val info = wrapped.extraInfo
-        val temp = world.getTemperature(wrapped)
+        val temp = world.getTemperatureAt(blockPos)
         val type = info.rainfallTypeFor(temp)
-        return if (type == BiomeExtendedInfo.RainfallType.SNOW) {
-            // < 0.15 is snow
-            0.0f
-        } else if (type == BiomeExtendedInfo.RainfallType.RAIN) {
-            // high Y coords always cause snow if it can rain
-            if (blockPos.y < 90) {
-                0.20f
-            } else {
-                0.00f
+        return when (type) {
+            BiomeExtendedInfo.RainfallType.SNOW -> {
+                // < 0.15 is snow
+                0.0f
             }
-        } else {
-            1.0f
+            BiomeExtendedInfo.RainfallType.RAIN -> 0.20f
+            else -> 1.0f
         }
     }
 }

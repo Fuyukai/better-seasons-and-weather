@@ -17,6 +17,7 @@
 
 package green.sailor.mc.bsaw.mixin;
 
+import green.sailor.mc.bsaw.Util;
 import green.sailor.mc.bsaw.api.BiomeExtendedInfo;
 import green.sailor.mc.bsaw.api.Season;
 import green.sailor.mc.bsaw.component.WorldSeasonComponent;
@@ -29,6 +30,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.LightType;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import net.minecraft.world.biome.Biome;
 import org.spongepowered.asm.mixin.Mixin;
@@ -52,12 +54,8 @@ public abstract class MixinServerWorld {
         Identifier id = Registry.BIOME.getId(biome);
         assert id != null;
         BiomeExtendedInfo info = BiomeInfoMapImpl.INSTANCE.get(id.toString());
-        WorldSeasonComponent component = WorldSeasonComponent.getSeasonComponent(thisRef);
-        double temp = component.getBiomeTemp(biome);
+        double temp = Util.getTemperatureAt(thisRef, blockPos);
         BiomeExtendedInfo.RainfallType type = info.rainfallTypeFor(temp);
-        if (type == BiomeExtendedInfo.RainfallType.RAIN) {
-            return blockPos.getY() >= 90;
-        }
         if (type != BiomeExtendedInfo.RainfallType.SNOW) return false;
 
         // default impl
