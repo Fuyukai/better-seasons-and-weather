@@ -68,6 +68,34 @@ class PlayerHeatComponentImpl(val player: PlayerEntity) : PlayerHeatComponent {
         return tag
     }
 
+    fun updateStatusEffects() {
+        if (isHypothermic && !player.hasStatusEffect(HypothermiaStatusEffect)) {
+            player.removeStatusEffect(HyperthermiaStatusEffect)
+            player.addStatusEffect(HypothermiaStatusEffect.get())
+        } else {
+            player.removeStatusEffect(HypothermiaStatusEffect)
+        }
+
+        if (isHyperthermic && !player.hasStatusEffect(HyperthermiaStatusEffect)) {
+            player.removeStatusEffect(HypothermiaStatusEffect)
+            player.addStatusEffect(HyperthermiaStatusEffect.get())
+        } else {
+            player.removeStatusEffect(HyperthermiaStatusEffect)
+        }
+    }
+
+    override fun coolOff(by: Double) {
+        _temperature -= by
+        updateStatusEffects()
+        sync()
+    }
+
+    override fun heatUp(by: Double) {
+        _temperature += by
+        updateStatusEffects()
+        sync()
+    }
+
     override fun update() {
         SHARED_POS.set(player)
         if (player.isCreative || player.isSpectator) {
@@ -116,12 +144,7 @@ class PlayerHeatComponentImpl(val player: PlayerEntity) : PlayerHeatComponent {
 
         }
 
-        if (isHypothermic) {
-            player.addStatusEffect(HypothermiaStatusEffect.get())
-        } else if (isHyperthermic) {
-            player.addStatusEffect(HyperthermiaStatusEffect.get())
-        }
-
+        updateStatusEffects()
         sync()
     }
 }

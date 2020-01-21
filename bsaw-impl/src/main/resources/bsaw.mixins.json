@@ -5,7 +5,8 @@
   "mixins": [
       "MixinWorld",
       "MixinServerWorld",
-      "MixinSnowBlock"
+      "MixinSnowBlock",
+      "MixinPotionItem"
   ],
   "client": [
       "client.MixinWorldRenderer"

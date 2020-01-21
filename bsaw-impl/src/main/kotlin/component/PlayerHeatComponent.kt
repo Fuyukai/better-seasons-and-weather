@@ -32,6 +32,16 @@ interface PlayerHeatComponent : EntitySyncedComponent, PlayerTemperatureProvider
     }
 
     /**
+     * Called to offset the temperature downwards.
+     */
+    fun coolOff(by: Double)
+
+    /**
+     * Called to offset the temperature upwards.
+     */
+    fun heatUp(by: Double)
+
+    /**
      * Called to update the heat for the player.
      */
     fun update()
