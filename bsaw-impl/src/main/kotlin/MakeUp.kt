@@ -38,6 +38,15 @@ import net.minecraft.world.dimension.DimensionType
 
 object MakeUp : ModInitializer {
     override fun onInitialize() {
+        val loader = FabricLoader.getInstance()
+        val entryPoints = loader.getEntrypoints("main", ModInitializer::class.java)
+        for (point in entryPoints) {
+            val pkg = point.javaClass.`package`
+            if (pkg.name.startsWith("io.github.indicode")) {
+                error("Refusing to start with a vulnerable mod loaded")
+            }
+        }
+
         Registry.register(
             Registry.STATUS_EFFECT,
             Identifier("bsaw:hypothermia"),
@@ -45,8 +54,7 @@ object MakeUp : ModInitializer {
         )
 
         // call other people
-        val instance = FabricLoader.getInstance()
-        val entry = instance.getEntrypoints("bsaw-biomes", InfoRegistrator::class.java)
+        val entry = loader.getEntrypoints("bsaw-biomes", InfoRegistrator::class.java)
         for (point in entry) {
             point.register(BiomeInfoMapImpl)
         }
